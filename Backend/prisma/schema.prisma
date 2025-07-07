@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model avaliacao {
+  userId     String
+  eventoId   Int
+  nota       Float
+  comentario String  @db.VarChar(200)
+  evento     evento  @relation(fields: [eventoId], references: [eventoId], onDelete: Cascade)
+  usuario    usuario @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([eventoId, userId])
+  @@index([userId], map: "Avaliacao_userId_fkey")
+}
+
+model categoria {
+  categoriaId       Int                 @id @default(autoincrement())
+  nome              categoria_nome
+  eventoCategorias  eventoCategorias[]
+  usuarioCategorias usuarioCategorias[]
+}
+
+model curtir {
+  userId   String
+  eventoId Int
+  evento   evento  @relation(fields: [eventoId], references: [eventoId], onDelete: Cascade)
+  usuario  usuario @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([eventoId, userId])
+  @@index([userId], map: "curtir_userId_fkey")
+}
+
+model evento {
+  eventoId              Int                       @id @default(autoincrement())
+  organizador           String
+  titulo                String?                   @db.VarChar(255)
+  sobre                 String                    @db.VarChar(255)
+  inicioData            DateTime
+  terminoData           DateTime
+  inscricoesInicioData  DateTime?
+  inscricoesTerminoData DateTime?
+  limite                Int
+  classificacaoIdade    evento_classificacaoIdade @default(LIVRE)
+  modalidade            evento_modalidade         @default(GRATUITO)
+  preco                 Decimal?                  @db.Decimal(10, 2)
+  acessibilidade        Boolean
+  local                 String
+  avaliacao             avaliacao[]
+  curtir                curtir[]
+  usuario               usuario                   @relation(fields: [organizador], references: [userId], onDelete: Cascade)
+  eventoCategorias      eventoCategorias[]
+  foto                  foto[]
+  inscricao             inscricao[]
+
+  @@index([organizador], map: "Evento_organizador_fkey")
+}
+
+model eventoCategorias {
+  categoriaId Int
+  eventoId    Int
+  categoria   categoria @relation(fields: [categoriaId], references: [categoriaId])
+  evento      evento    @relation(fields: [eventoId], references: [eventoId])
+
+  @@id([eventoId, categoriaId])
+  @@index([categoriaId], map: "eventoCategorias_categoriaId_fkey")
+}
+
+model foto {
+  eventoId Int
+  foto     String
+  evento   evento @relation(fields: [eventoId], references: [eventoId], onDelete: Cascade)
+
+  @@id([eventoId, foto])
+}
+
+model inscricao {
+  userId    String
+  eventoId  Int
+  criardAt DateTime @default(now())
+  evento    evento   @relation(fields: [eventoId], references: [eventoId], onDelete: Cascade)
+  usuario   usuario  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([eventoId, userId])
+  @@index([userId], map: "inscricao_userId_fkey")
+}
+
+model sessao {
+  deviceId  String   @id
+  userId    String
+  sessionId String   @unique
+  expiredAt DateTime
+  usuario   usuario  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId], map: "sessao_userId_fkey")
+}
+
+model usuario {
+  userId            String              @id
+  fotoPerfil        String?
+  nome              String              @db.VarChar(30)
+  email             String              @unique @db.VarChar(50)
+  senha             String              @db.VarChar(100)
+  role              usuario_role        @default(COMMON)
+  documento         String?             @unique @db.VarChar(18)
+  avaliacao         avaliacao[]
+  curtir            curtir[]
+  evento            evento[]
+  inscricao         inscricao[]
+  sessao            sessao[]
+  usuarioCategorias usuarioCategorias[]
+}
+
+model usuarioCategorias {
+  categoriaId Int
+  userId      String
+  categoria   categoria @relation(fields: [categoriaId], references: [categoriaId])
+  usuario     usuario   @relation(fields: [userId], references: [userId])
+
+  @@id([userId, categoriaId])
+  @@index([categoriaId], map: "usuarioCategorias_categoriaId_fkey")
+}
+
+enum categoria_nome {
+  CULTURAL
+  CULINARIA
+  NATUREZA
+  MUSICA
+  ESPORTE
+  EDUCACAO
+}
+
+enum usuario_role {
+  COMMON
+  PROFESSIONAL
+}
+
+enum evento_classificacaoIdade {
+  LIVRE
+  MAIOR10
+  MAIOR12
+  MAIOR14
+  MAIOR16
+  MAIOR18
+}
+
+enum evento_modalidade {
+  PAGO
+  GRATUITO
+}

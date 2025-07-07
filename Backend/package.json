@@ -1,0 +1,35 @@
+{
+  "name": "hackthon",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "prisma": "npx prisma gerar && npx prisma db push",
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.6.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.2",
+    "otplib": "^12.0.1",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prisma": "^6.6.0"
+  }
+}
