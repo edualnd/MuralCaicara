@@ -4,14 +4,11 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import deviceIdGenerator from './middlewares/deviceIdMiddleware.js';
 import visitorRoutes from './routes/visitorRouter.js';
-import usuarioRoutes from './routes/usuarioRouter.js';
-import curtidasRoutes from './routes/curtidasRoutes.js';
+
 import eventoRoutes from './routes/eventoRoutes.js';
 import checarAccessTokenMiddleware from './middlewares/checarAccessTokenMiddleware.js';
 import logger from './middlewares/logger.js';
 import errorsHandler from './middlewares/errorHandler.js';
-import avaliacaoRoutes from './routes/avaliacaoRoutes.js';
-import eventoInscricaoRoutes from './routes/eventoInscricaoRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -41,15 +38,15 @@ app.get('/auth', (req, res, next) => {
   });
 });
 
-app.use('/auth/usuario', usuarioRoutes);
+//app.use('/auth/usuario', usuarioRoutes);
 
 app.use('/auth/evento/', eventoRoutes);
 
-app.use('/auth/avaliacao', avaliacaoRoutes);
+//app.use('/auth/avaliacao', avaliacaoRoutes);
 
-app.use('/auth/inscricao', eventoInscricaoRoutes);
+//app.use('/auth/inscricao', eventoInscricaoRoutes);
 
-app.use('auth/curtidas', curtidasRoutes);
+//app.use('auth/curtidas', curtidasRoutes);
 
 app.use(errorsHandler);
 app.listen(PORT, (req, res) => {

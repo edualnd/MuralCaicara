@@ -1,10 +1,10 @@
 import prisma from '../utils/prisma/db.js';
 
 // REGISTER
-const checarCredenciarCadastro = async (email, nome) => {
+const checarCredenciarCadastro = async (email) => {
   const user = await prisma.usuario.findFirst({
     where: {
-      OR: [{ email: email }, { nome: nome }],
+      email,
     },
     select: {
       userId: true,
@@ -74,38 +74,17 @@ const getPerfilUsuario = async (userId) => {
 };
 
 //LOGIN
-const checarCredenciarLogin = async (data) => {
+const checarCredenciarLogin = async (email) => {
   const user = await prisma.usuario.findFirst({
     where: {
-      OR: [{ email: data }, { username: data }],
+      email,
     },
     select: {
-      eventoInscricaoscription: {
-        select: {
-          publicationId: true,
-        },
-      },
       role: true,
-      username: true,
-      userImage: true,
+      nome: true,
+      fotoPerfil: true,
       userId: true,
-      password: true,
-      bio: true,
-      Rating: {
-        select: {
-          publicationId: true,
-          rating: true,
-        },
-      },
-      following: {
-        select: {
-          followerBy: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
+      senha: true,
     },
   });
   return user || null;
@@ -117,7 +96,7 @@ const getDadosUsuario = async (userId) => {
     where: { userId },
     select: {
       userId: true,
-      username: true,
+      nome: true,
       email: true,
       role: true,
     },

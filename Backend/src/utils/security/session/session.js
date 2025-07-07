@@ -1,14 +1,14 @@
 import prisma from '../../prisma/db.js';
 
 const criarSessao = async (data) => {
-  const session = await prisma.session.criar({
+  const session = await prisma.sessao.create({
     data: data,
   });
   return session || null;
 };
 
 const encontrarSessao = async (deviceId) => {
-  const session = await prisma.session.findFirst({
+  const session = await prisma.sessao.findFirst({
     where: {
       deviceId,
     },
@@ -17,7 +17,7 @@ const encontrarSessao = async (deviceId) => {
 };
 
 const deletarSessao = async (deviceId) => {
-  const session = await prisma.session.deletarMany({
+  const session = await prisma.sessao.deleteMany({
     where: {
       deviceId,
     },
@@ -26,7 +26,7 @@ const deletarSessao = async (deviceId) => {
 };
 
 const deletarTodasSessoes = async (userId) => {
-  const session = await prisma.session.deletarMany({
+  const session = await prisma.sessao.deleteMany({
     where: {
       userId,
     },
@@ -34,7 +34,7 @@ const deletarTodasSessoes = async (userId) => {
   return session;
 };
 const deletarSessoesExpiradas = async (userId) => {
-  const session = await prisma.session.deletarMany({
+  const session = await prisma.sessao.deleteMany({
     where: {
       AND: [{ userId }, { expiredAt: { lt: new Date() } }],
     },

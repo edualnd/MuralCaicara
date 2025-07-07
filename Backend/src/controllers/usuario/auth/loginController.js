@@ -13,19 +13,17 @@ import CustomError from '../../../errors/CustomErrors.js';
 
 const loginController = async (req, res, next) => {
   try {
-    const { data, password } = req.body;
+    const { email, senha } = req.body;
 
-    const user = await checarCredenciarLogin(data);
-
-    const typeOfData = data.includes('@') ? 'email' : 'username';
+    const user = await checarCredenciarLogin(email);
     if (!user) {
-      throw new CustomError(401, `Erro, ${typeOfData} ou senha incorreto`);
+      throw new CustomError(401, `Erro, email ou senha incorreto`);
     }
 
-    const isValidPassword = await comparar(password, user.password);
+    const ehValidaSenha = await comparar(senha, user.senha);
 
-    if (!isValidPassword) {
-      throw new CustomError(401, `Erro, ${typeOfData} ou senha incorreto`);
+    if (!ehValidaSenha) {
+      throw new CustomError(401, `Erro, email ou senha incorreto`);
     }
 
     const deviceId = req.cookies?.deviceId;
@@ -38,7 +36,6 @@ const loginController = async (req, res, next) => {
     const expiredAt = dayjs()
       .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
       .toDate();
-    console.log(deviceId);
 
     const sessionData = {
       userId: user.userId,
@@ -64,7 +61,7 @@ const loginController = async (req, res, next) => {
       expires: expiredAt,
       path: '/auth',
     });
-    const { password: psw, ...loggedUser } = user;
+    const { senha: psw, ...loggedUser } = user;
     return res.status(200).json({
       success: true,
       message: 'Logado',

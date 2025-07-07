@@ -3,19 +3,13 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function criarEvento(post) {
-  const result = await prisma.publication.create({
+  const result = await prisma.evento.create({
     data: post,
     include: {
-      User: {
+      usuario: {
         select: {
           userId: true,
-          username: true,
-          userImage: true,
-        },
-      },
-      Rating: {
-        select: {
-          rating: true,
+          nome: true,
         },
       },
     },
@@ -24,7 +18,7 @@ export async function criarEvento(post) {
 }
 
 export async function atualizarEvento(publicationId, data) {
-  const result = await prisma.publication.update({
+  const result = await prisma.evento.update({
     where: {
       publicationId: Number(publicationId),
     },
@@ -48,7 +42,7 @@ export async function atualizarEvento(publicationId, data) {
 }
 
 export async function deletarEvento(authorId, publicationId) {
-  const result = await prisma.publication.delete({
+  const result = await prisma.evento.delete({
     where: {
       publicationId: Number(publicationId),
       authorId: authorId,
@@ -58,15 +52,13 @@ export async function deletarEvento(authorId, publicationId) {
 }
 
 export async function getEventList() {
-  const result = await prisma.publication.findMany({
-    where: {
-      isEvent: true,
-    },
+  const result = await prisma.evento.findMany({
+   
   });
   return result;
 }
 export async function getImages(publicationId) {
-  const result = await prisma.publication.findFirst({
+  const result = await prisma.evento.findFirst({
     where: { publicationId },
     select: {
       image: true,

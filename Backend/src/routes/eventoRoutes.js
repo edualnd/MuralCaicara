@@ -9,13 +9,14 @@ import upload from '../utils/multer/config.js';
 
 const router = express.Router();
 
-router.get('/listar', getEventoController);
+//TODO: Listar de acordo com interesses
+//router.get('/listar', getEventoController);
 
 router.post('/', upload.array('photos', 2), criarEventoController);
 router.put(
-  '/:publicationId',
+  '/:eventoId',
   upload.array('photos', 2),
   atualizarEventoController,
 );
-router.delete('/:publicationId', deletarEventoController);
+router.delete('/:eventoId', deletarEventoController);
 export default router;

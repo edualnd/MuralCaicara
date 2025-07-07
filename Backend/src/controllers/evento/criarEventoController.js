@@ -10,34 +10,54 @@ export default async function criarEventoController(req, res, next) {
     const user = req.user.userId;
     const role = req.user.userRole;
     const {
-      isEvent,
-      text,
-      title,
-      eventDate,
-      registrationStartDate,
-      registrationEndDate,
+      titulo,
+      sobre,
+      inicioData,
+      terminoData,
+      inscritos,
+      inscricoesInicioData,
+      inscricoesTerminoData,
+      limite,
+      classificacaoIdade,
+      modalidade,
+      preco,
+      acessibilidade,
+      local,
     } = req.body;
-    console.log(typeof isEvent);
-    if (isEvent == 'true' && role == 'COMMOM') {
-      return res.status(401).json({ message: 'voce não e um profissional' });
+
+    if (role == 'USUARIO') {
+      return res.status(401).json({ message: 'Voce não e um organizador' });
     }
-    const rEnd = registrationEndDate == undefined ? null : registrationEndDate;
-    const rStart =
-      registrationStartDate == undefined ? null : registrationStartDate;
-    const post = {
-      text,
-      title,
-      isEvent: Boolean(isEvent),
-      authorId: user,
-      eventDate,
-      registrationEndDate: rEnd,
-      registrationStartDate: rStart,
+    const inscricoesInicio =
+      inscricoesInicioData == undefined || inscritos == 'false'
+        ? null
+        : inscricoesInicioData;
+    const inscricoesTermino =
+      inscricoesTerminoData == undefined || inscritos == 'false'
+        ? null
+        : inscricoesTerminoData;
+    const limi = inscritos == 'false' ? null : Number(limite);
+    const valor = modalidade == 'GRATUITO' ? null : preco;
+    const evento = {
+      titulo,
+      sobre,
+      inicioData,
+      terminoData,
+      limite: limi,
+      classificacaoIdade,
+      modalidade,
+      preco: valor,
+      acessibilidade: Boolean(acessibilidade),
+      local,
+      organizador: user,
+      inscricoesInicioData: inscricoesInicio,
+      inscricoesTerminoData: inscricoesTermino,
     };
 
-    const { success, error, data } = await validadorSchema(eventoSchema, {
-      text,
-      title,
-    });
+    const { success, error, data } = await validadorSchema(
+      eventoSchema,
+      evento,
+    );
 
     let cloudImage;
     if (photo) {
@@ -69,8 +89,8 @@ export default async function criarEventoController(req, res, next) {
       images = { image: photoId[0] };
     }
 
-    const result = await criarEvent({ ...post, ...images });
-
+    const result = await criarEvento({ ...evento });
+    //TODO: associar imagens ao evento
     return res.status(200).json({
       success: true,
       message: 'Evento criado com sucesso!',

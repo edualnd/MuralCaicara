@@ -40,13 +40,13 @@ model curtir {
 model evento {
   eventoId              Int                       @id @default(autoincrement())
   organizador           String
-  titulo                String?                   @db.VarChar(255)
+  titulo                String                   @db.VarChar(255)
   sobre                 String                    @db.VarChar(255)
   inicioData            DateTime
   terminoData           DateTime
   inscricoesInicioData  DateTime?
   inscricoesTerminoData DateTime?
-  limite                Int
+  limite                Int?
   classificacaoIdade    evento_classificacaoIdade @default(LIVRE)
   modalidade            evento_modalidade         @default(GRATUITO)
   preco                 Decimal?                  @db.Decimal(10, 2)
@@ -102,12 +102,12 @@ model sessao {
 }
 
 model usuario {
-  userId            String              @id
+  userId            String              @id @default(uuid())
   fotoPerfil        String?
   nome              String              @db.VarChar(30)
   email             String              @unique @db.VarChar(50)
   senha             String              @db.VarChar(100)
-  role              usuario_role        @default(COMMON)
+  role              usuario_role        @default(USUARIO)
   documento         String?             @unique @db.VarChar(18)
   avaliacao         avaliacao[]
   curtir            curtir[]
@@ -137,8 +137,8 @@ enum categoria_nome {
 }
 
 enum usuario_role {
-  COMMON
-  PROFESSIONAL
+  USUARIO
+  ORGANIZADOR
 }
 
 enum evento_classificacaoIdade {

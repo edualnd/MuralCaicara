@@ -12,12 +12,8 @@ import upload from '../utils/multer/config.js';
 
 const router = express.Router();
 
-router.patch('/editar', upload.single('avatar'), editarUsuarioController);
+router.patch('/editar', upload.single('foto'), editarUsuarioController);
 
-router.patch('/mudar-senha', senhaController);
-
-router.post('/send-email-otp', autheticateMiddleware, emailOtpController);
-router.patch('/mudar-email', verificarOTPMiddleware, emailController);
 
 router.get('/logout', logoutController);
 

@@ -3,7 +3,10 @@ import {
   perfilAtual,
   checarCredenciarCadastro,
 } from '../../model/usuarioModel.js';
-import { profileSchema, usuarioSchema } from '../../schemas/usuarioSchema.js';
+import {
+  organizadorRoleSchema,
+  usuarioSchema,
+} from '../../schemas/usuarioSchema.js';
 import { deletarDoCloud, uploadCloud } from '../../utils/cloudinary/config.js';
 import validadorSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
@@ -57,7 +60,7 @@ const editarUsuarioController = async (req, res, next) => {
     }
 
     const { success, error: errorI } = await validadorSchema(
-      profileSchema,
+      organizadorRoleSchema,
       {
         bio: newBio || '',
       },
